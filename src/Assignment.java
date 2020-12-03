@@ -10,6 +10,8 @@ import org.hibernate.query.Query;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Assignment {
 
@@ -90,4 +92,26 @@ public class Assignment {
 
         return u;
     }
+
+    /**
+     * This function is getting all users in the DB
+     * @return list of all the users in the db
+     */
+    public static List<Users> getUsers (){
+        List<Users> allUsers = new ArrayList<>();
+        try (Session s = getSession())
+        {
+            String q = "from Users";
+            Query query = s.createQuery(q);
+            for (Object o :
+                    query.list()) {
+                allUsers.add((Users)o);
+            }
+        }
+
+        return allUsers;
+    }
+
+
+
 }

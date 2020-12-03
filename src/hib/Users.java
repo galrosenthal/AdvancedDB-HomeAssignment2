@@ -1,14 +1,12 @@
 package hib;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-public class USERS {
+@Table(name="USERS")
+public class Users {
     private long userid;
     private String username;
     private String password;
@@ -91,7 +89,7 @@ public class USERS {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        USERS users = (USERS) o;
+        Users users = (Users) o;
         return userid == users.userid &&
                 Objects.equals(username, users.username) &&
                 Objects.equals(password, users.password) &&

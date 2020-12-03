@@ -40,6 +40,14 @@ public class LoginLogPK implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return "LoginLogPK{" +
+                "userid=" + userid +
+                ", logintime=" + logintime +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(userid, logintime);
     }

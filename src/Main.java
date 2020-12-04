@@ -1,3 +1,4 @@
+import hib.Users;
 import org.hibernate.HibernateException;
 import org.hibernate.Metamodel;
 import org.hibernate.query.Query;
@@ -7,7 +8,7 @@ import org.hibernate.cfg.Configuration;
 
 import javax.persistence.metamodel.EntityType;
 
-import java.util.Map;
+import java.util.List;
 
 public class Main {
     private static final SessionFactory ourSessionFactory;
@@ -46,7 +47,14 @@ public class Main {
 //    }
 
     public static void main(String[] args){
-        Assignment.insertToLog("5");
-        Assignment.insertToLog("32");
+//        Assignment.insertToLog("5");
+//        Assignment.insertToLog("32");
+//        Users u = Assignment.getUser("32");
+//        System.out.println(u);
+//        List<Users> all = Assignment.getUsers();
+//        System.out.println(all);
+
+        System.out.println(Assignment.getNumberOfRegistredUsers(4));
+        System.out.println(Assignment.getNumberOfRegistredUsers(0));
     }
 }

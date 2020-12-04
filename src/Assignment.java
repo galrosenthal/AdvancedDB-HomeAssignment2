@@ -8,8 +8,11 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Assignment {
 
@@ -90,4 +93,54 @@ public class Assignment {
 
         return u;
     }
+
+    /**
+     * This function is getting all users in the DB
+     * @return list of all the users in the db
+     */
+    public static List<Users> getUsers (){
+        List<Users> allUsers = new ArrayList<>();
+        try (Session s = getSession())
+        {
+            String q = "from Users";
+            Query query = s.createQuery(q);
+            for (Object o :
+                    query.list()) {
+                allUsers.add((Users)o);
+            }
+        }
+
+        return allUsers;
+    }
+
+    /**
+     * This function is getting the number of days to look back for new registered users,
+     * if the n is smaller than 0 returns 0
+     * else, it counts every registered user in the last n days (From the current time that the function is called)
+     * @param n - the number of days to look back
+     * @return the number of registered user in the last n days
+     */
+    public static int getNumberOfRegistredUsers(int n){
+        if (n < 0)
+        {
+            System.out.println("Cannot search for negative days");
+            return 0;
+        }
+        try (Session s = getSession()){
+
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            LocalDateTime minusNdays = now.toLocalDateTime().minusDays(n);
+
+            String q = "select count(*) from Users u where u.registrationDate >= :minusNdays";
+            Query query = s.createQuery(q);
+            query.setTimestamp("minusNdays", Timestamp.valueOf(minusNdays));
+
+            Long count = (Long)query.list().get(0);
+            return Integer.parseInt(count.toString());
+        }
+        catch (Exception e){
+            return 0;
+        }
+    }
+
 }

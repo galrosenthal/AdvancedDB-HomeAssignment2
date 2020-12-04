@@ -8,11 +8,14 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Assignment {
 
@@ -141,6 +144,38 @@ public class Assignment {
         catch (Exception e){
             return 0;
         }
+    }
+
+
+    /**
+     * This function is getting a userid,
+     * if the userid is representing an existing user
+     * then the function gets all the user history sorted asc by their viewtime
+     * and creates a map of the Media item title that the user viewed and the time he did
+     * @param userid - the userid to get his historye
+     * @return {@code Map<String (title),Date>} of the title the user viewed and the date.
+     */
+    public static Map<String, Date> getHistory (String userid){
+        Map<String,Date> userHistory = new HashMap<>();
+        try (Session s = getSession()){
+            if (getUser(userid) != null) {
+                String q = "select md.title, h.viewtime from History h join Mediaitems md on h.mid = md.mid" +
+                        " where h.id.userid = '" + userid + "' order by h.viewtime asc";
+                Query query = s.createQuery(q);
+                for (Object o :
+                        query.list()) {
+                    Object[] ob = (Object[]) o;
+                    String title = (String) ob[0];
+                    Timestamp time = (Timestamp) ob[1];
+                    Date date = new Date(time.getTime());
+                    userHistory.put(title, date);
+                    System.out.println(title + ":" + date.toString());
+                }
+            }
+        }
+
+
+        return userHistory;
     }
 
 }

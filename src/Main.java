@@ -28,24 +28,6 @@ public class Main {
         return ourSessionFactory.openSession();
     }
 
-//    public static void main(final String[] args) throws Exception {
-//        final Session session = getSession();
-//        try {
-//            System.out.println("querying all the managed entities...");
-//            final Metamodel metamodel = session.getSessionFactory().getMetamodel();
-//            for (EntityType<?> entityType : metamodel.getEntities()) {
-//                final String entityName = entityType.getName();
-//                final Query query = session.createQuery("from " + entityName);
-//                System.out.println("executing: " + query.getQueryString());
-//                for (Object o : query.list()) {
-//                    System.out.println("  " + o);
-//                }
-//            }
-//        } finally {
-//            session.close();
-//        }
-//    }
-
     public static void main(String[] args){
 //        Assignment.insertToLog("5");
 //        Assignment.insertToLog("32");
@@ -54,7 +36,16 @@ public class Main {
 //        List<Users> all = Assignment.getUsers();
 //        System.out.println(all);
 
-        System.out.println(Assignment.getNumberOfRegistredUsers(4));
-        System.out.println(Assignment.getNumberOfRegistredUsers(0));
+//        System.out.println(Assignment.getNumberOfRegistredUsers(4));
+//        System.out.println(Assignment.getNumberOfRegistredUsers(0));
+
+        assertEquals(2, Assignment.getHistory("32").size());
+        assertEquals(0, Assignment.getHistory("5").size());
+        assertEquals(0, Assignment.getHistory("1853").size());
+
+    }
+
+    private static void assertEquals(int expected, int result) {
+        System.out.println(expected == result);
     }
 }

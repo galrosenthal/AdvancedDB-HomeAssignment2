@@ -49,7 +49,12 @@ public class Main {
     public static void main(String[] args){
 //        Assignment.insertToLog("5");
 //        Assignment.insertToLog("32");
-        List<Users> all = Assignment.getUsers();
-        System.out.println(all);
+//        Users u = Assignment.getUser("32");
+//        System.out.println(u);
+//        List<Users> all = Assignment.getUsers();
+//        System.out.println(all);
+
+        System.out.println(Assignment.getNumberOfRegistredUsers(4));
+        System.out.println(Assignment.getNumberOfRegistredUsers(0));
     }
 }

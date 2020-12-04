@@ -1,5 +1,6 @@
 import hib.LoginLog;
 import hib.LoginLogPK;
+import hib.Mediaitems;
 import hib.Users;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -9,7 +10,10 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 public class Assignment {
 
@@ -36,16 +40,17 @@ public class Assignment {
      * checks if it exists in the DB
      * if it does
      * it inserts a new <i>LoginLog</i> to the DB
+     *
      * @param userid - the userid to log its login
      */
-    public static void insertToLog (String userid){
+    public static void insertToLog(String userid) {
 
 
         // If userid does not exists returns null
         Users u = getUser(userid);
 
 
-        if(u != null){
+        if (u != null) {
             try (Session session = getSession()) {
 
                 LocalDateTime time = LocalDateTime.now();
@@ -78,16 +83,71 @@ public class Assignment {
      * and tries to retrieve it from the table Users
      * if the userid does exists it return a new Object of type <i>Users</i>
      * else it return null
+     *
      * @param userid - the id to retrieve from the DB
      * @return Object of type Users if the user exists and null otherwise
      */
-    public static Users getUser (String userid){
+    public static Users getUser(String userid) {
         Users u = null;
         // Check if userid exists in Users
-        try (Session s = getSession()){
+        try (Session s = getSession()) {
             u = (Users) s.get(Users.class, Long.parseLong(userid));
         }
 
         return u;
     }
+
+    //1.2.3
+    public static boolean isExistUsername(String username) {
+        Users u = null;
+        try (Session s = getSession()) {
+            u = (Users) s.get(Users.class, username);
+            if (u == null)
+                return false;
+            else {
+                return true;
+            }
+        }
+    }
+
+    //1.2.4
+    public static String insertUser(String username, String password, String first_name, String last_name, String day_of_birth, String month_of_birth, String year_of_birth) {
+        if (username == null || isExistUsername(username)) {
+            return null;
+        } else {
+            if (Integer.parseInt(year_of_birth) > 2020 || Integer.parseInt(day_of_birth) < 1 || Integer.parseInt(day_of_birth) > 31 || Integer.parseInt(month_of_birth) < 1 || Integer.parseInt(month_of_birth) > 12 || password == null || first_name == null || last_name == null)
+                return null;
+            else {
+                try (Session session = getSession()) {
+
+                    LocalDateTime time = LocalDateTime.now();
+                    Users user = new Users();
+
+                    user.setDateOfBirth(Timestamp.valueOf(year_of_birth));
+                    user.setFirstName(first_name);
+                    user.setLastName(last_name);
+                    user.setPassword(password);
+                    user.setRegistrationDate(Timestamp.valueOf(time));
+                    user.setUsername(username);
+
+                    Transaction tx = session.beginTransaction();
+                    // Insert it to the DB
+                    String userid = (String) session.save(user);
+
+                    //Commit The transaction
+                    tx.commit();
+                    return userid;
+                }
+            }
+        }
+    }
+
+
+//    //1.2.5
+//    public static List<Mediaitems> getTopItems(int top_n) {
+//        List<Mediaitems> m = null;
+//        try (Session s = getSession()) {
+//            u = (Users) s.get(Users.class, Long.parseLong(userid));
+//        }
+//    }
 }

@@ -103,12 +103,10 @@ public class Assignment {
     public static boolean isExistUsername(String username) {
         Users u = null;
         try (Session s = getSession()) {
-            u = (Users) s.get(Users.class, username);
-            if (u == null)
-                return false;
-            else {
-                return true;
-            }
+            String q = "select u.userid from Users u where u.username = '" + username + "'";
+            Query query = s.createQuery(q);
+
+            return query.list().size() == 1;
         }
     }
 

@@ -60,8 +60,8 @@ public class Main {
 //        assertTrue(Assignment.isExistUsername("gal"));
 //        assertFalse(Assignment.isExistUsername("gal5432"));
 
-        String userid = Assignment.insertUser("gal5432", "Aa123456", "gal", "r",
-                "1", "11", "1993");
+        String userid = Assignment.insertUser("gal54321", "Aa123456", "gal", "r",
+                "01", "11", "1993");
         assertTrue(Assignment.isExistUsername("gal5432"));
         Users u = Assignment.getUser(userid);
         assertTrue(u != null);

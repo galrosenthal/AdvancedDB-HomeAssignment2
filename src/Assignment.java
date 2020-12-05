@@ -11,6 +11,7 @@ import org.hibernate.query.Query;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -115,15 +116,24 @@ public class Assignment {
         if (username == null || isExistUsername(username)) {
             return null;
         } else {
-            if (Integer.parseInt(year_of_birth) > 2020 || Integer.parseInt(day_of_birth) < 1 || Integer.parseInt(day_of_birth) > 31 || Integer.parseInt(month_of_birth) < 1 || Integer.parseInt(month_of_birth) > 12 || password == null || first_name == null || last_name == null)
+            LocalDateTime time = LocalDateTime.now();
+            if (Integer.parseInt(year_of_birth) > time.getYear() || Integer.parseInt(day_of_birth) < 1 ||
+                    Integer.parseInt(day_of_birth) > 31 || Integer.parseInt(month_of_birth) < 1 ||
+                    Integer.parseInt(month_of_birth) > 12 || password == null || first_name == null || last_name == null)
                 return null;
             else {
+                if (Integer.parseInt(day_of_birth) < 10 && day_of_birth.length() == 1){
+                    day_of_birth = "0" + day_of_birth;
+                }
                 try (Session session = getSession()) {
+                    SimpleDateFormat formatter2=new SimpleDateFormat("dd-MM-yyyy");
+                    String bDay = day_of_birth + "-" + month_of_birth + "-" + year_of_birth;
 
-                    LocalDateTime time = LocalDateTime.now();
+                    Date d = formatter2.parse(bDay);
+                    Timestamp bDayStamp = new Timestamp(d.getTime());
                     Users user = new Users();
 
-                    user.setDateOfBirth(Timestamp.valueOf(year_of_birth));
+                    user.setDateOfBirth(bDayStamp);
                     user.setFirstName(first_name);
                     user.setLastName(last_name);
                     user.setPassword(password);
@@ -132,11 +142,14 @@ public class Assignment {
 
                     Transaction tx = session.beginTransaction();
                     // Insert it to the DB
-                    String userid = (String) session.save(user);
+                    Long userid = (Long) session.save(user);
 
                     //Commit The transaction
                     tx.commit();
-                    return userid;
+                    return Long.toString(userid);
+                }
+                catch (Exception e){
+                    return null;
                 }
             }
         }

@@ -1,5 +1,7 @@
 package hib;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -16,6 +18,8 @@ public class Users {
     private Timestamp registrationDate;
 
     @Id
+    @GenericGenerator(name="kaugen" , strategy="increment")
+    @GeneratedValue(generator="kaugen")
     @Column(name = "USERID", nullable = false, precision = 0)
     public long getUserid() {
         return userid;

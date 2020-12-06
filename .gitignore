@@ -1,3 +1,5 @@
 # Project exclude paths
 /out/
 /.idea/misc.xml
+/src/META-INF/MANIFEST.MF
+/.idea/artifacts/AdvancedDB_HomeAssignment2_jar.xml

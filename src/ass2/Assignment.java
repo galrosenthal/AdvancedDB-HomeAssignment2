@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.net.URL;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -22,8 +23,9 @@ public class Assignment {
         try {
             Configuration configuration = new Configuration();
 
+            URL pathToXML = Assignment.class.getClassLoader().getResource("hibernate.cfg.xml");
 
-            ourSessionFactory = configuration.configure("ass2\\hibernate.cfg.xml").buildSessionFactory();
+            ourSessionFactory = configuration.configure(pathToXML.toString()).buildSessionFactory();
         } catch (Throwable ex) {
             throw new ExceptionInInitializerError(ex);
         }

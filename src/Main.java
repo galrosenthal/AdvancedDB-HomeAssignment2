@@ -39,6 +39,26 @@ public class Main {
 //        System.out.println(Assignment.getNumberOfRegistredUsers(4));
 //        System.out.println(Assignment.getNumberOfRegistredUsers(0));
 
+//        assertTrue(Assignment.isExistUsername("gal"));
+//        assertFalse(Assignment.isExistUsername("gal5432"));
+
+        String userid = Assignment.insertUser("gal54321", "Aa123456", "gal", "r",
+                "01", "11", "1993");
+        assertTrue(Assignment.isExistUsername("gal5432"));
+        Users u = Assignment.getUser(userid);
+        assertTrue(u != null);
+
+    }
+
+    private static void assertFalse(boolean result) {
+        System.out.println(!result);
+    }
+
+    private static void assertTrue(boolean result) {
+        System.out.println(result);
+//        System.out.println(Assignment.getNumberOfRegistredUsers(4));
+//        System.out.println(Assignment.getNumberOfRegistredUsers(0));
+
         assertEquals(2, Assignment.getHistory("32").size());
         assertEquals(0, Assignment.getHistory("5").size());
         assertEquals(0, Assignment.getHistory("1853").size());

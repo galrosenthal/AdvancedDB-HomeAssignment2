@@ -12,10 +12,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Assignment {
 
@@ -46,7 +43,13 @@ public class Assignment {
      * @param userid - the userid to log its login
      */
     public static void insertToLog(String userid) {
-
+        // if the string is not a number
+        try{
+            int id = Integer.parseInt(userid);
+        }
+        catch (Exception e){
+            return;
+        }
 
         // If userid does not exists returns null
         Users u = getUser(userid);
@@ -90,6 +93,12 @@ public class Assignment {
      * @return Object of type Users if the user exists and null otherwise
      */
     public static Users getUser(String userid) {
+        try{
+            int id = Integer.parseInt(userid);
+        }
+        catch (Exception e){
+            return null;
+        }
         Users u = null;
         // Check if userid exists in Users
         try (Session s = getSession()) {
@@ -107,6 +116,9 @@ public class Assignment {
      * @return whether the username already exist for a different user
      */
     public static boolean isExistUsername(String username) {
+        if (username == null){
+            return false;
+        }
         Users u = null;
         try (Session s = getSession()) {
             String q = "select u.userid from Users u where u.username = '" + username + "'";
@@ -187,13 +199,14 @@ public class Assignment {
         try (Session s = getSession()) {
 
 
-            String q = "select items from Mediaitems items where rownum<=" + top_n + "order by mid";
-            Query query = s.createQuery(q);
+            String q = "from Mediaitems order by mid asc";
+            Query query = s.createQuery(q).setMaxResults(top_n);
 
             for (Object o :
                     query.list()) {
                 mediaitems.add((Mediaitems) o);
             }
+            Collections.reverse(mediaitems);
             return mediaitems;
         } catch (Exception e) {
             return null;
@@ -210,18 +223,22 @@ public class Assignment {
      */
     public static String validateUser(String username, String password) {
         if (username == null || password == null) {
-            return null;
+            return "Not Found";
         }
         Users u = null;
         try (Session s = getSession()) {
             String q = "select u.userid from Users u where u.username = '" + username + "'";
             Query query = s.createQuery(q);
-            u = (Users) query.list().get(0);
+            long uid = (Long) query.list().get(0);
+            u = getUser(Long.toString(uid));
             if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
                 return String.valueOf(u.getUserid());
             } else {
-                return null;
+                return "Not Found";
             }
+        }
+        catch (Exception e){
+            return "Not Found";
         }
     }
 
@@ -235,18 +252,21 @@ public class Assignment {
      */
     public static String validateAdministrator(String username, String password) {
         if (username == null || password == null) {
-            return null;
+            return "Not Found";
         }
-        ADMINISTRATORS u = null;
+        ADMINISTRATORS a = null;
         try (Session s = getSession()) {
-            String q = "select u.adminId from ADMINISTRATORS u where u.username = '" + username + "'";
+            String q = "select a from ADMINISTRATORS a where a.username = '" + username + "'";
             Query query = s.createQuery(q);
-            u = (ADMINISTRATORS) query.list().get(0);
-            if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
-                return String.valueOf(u.getAdminId());
+            a = (ADMINISTRATORS) query.list().get(0);
+            if (a.getUsername().equals(username) && a.getPassword().equals(password)) {
+                return String.valueOf(a.getAdminId());
             } else {
-                return null;
+                return "Not Found";
             }
+        }
+        catch (Exception e){
+            return "Not Found";
         }
     }
 
@@ -272,6 +292,10 @@ public class Assignment {
             s.save(h);
             //Commit The transaction
             tx.commit();
+            System.out.println("The insertion to history table was successful " + now.toLocalDateTime().toString());
+        }
+        catch (Exception e){
+            // do nothing
         }
     }
 
@@ -335,6 +359,12 @@ public class Assignment {
      */
     public static Map<String, Date> getHistory(String userid) {
         Map<String, Date> userHistory = new HashMap<>();
+        try{
+            int id = Integer.parseInt(userid);
+        }
+        catch (Exception e){
+            return userHistory;
+        }
         try (Session s = getSession()) {
             if (getUser(userid) != null) {
                 String q = "select md.title, h.viewtime from History h join Mediaitems md on h.mid = md.mid" +

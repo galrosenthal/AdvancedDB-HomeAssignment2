@@ -1,4 +1,6 @@
-import hib.*;
+package ass2;
+
+import ass2.hib.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -7,13 +9,9 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +26,7 @@ public class Assignment {
             Configuration configuration = new Configuration();
 
 
-            ourSessionFactory = configuration.configure().buildSessionFactory();
+            ourSessionFactory = configuration.configure("ass2\\hibernate.cfg.xml").buildSessionFactory();
         } catch (Throwable ex) {
             throw new ExceptionInInitializerError(ex);
         }
@@ -141,14 +139,14 @@ public class Assignment {
                     Integer.parseInt(month_of_birth) > 12 || password == null || first_name == null || last_name == null)
                 return null;
             else {
-                if (Integer.parseInt(day_of_birth) < 10 && day_of_birth.length() == 1){
+                if (Integer.parseInt(day_of_birth) < 10 && day_of_birth.length() == 1) {
                     day_of_birth = "0" + day_of_birth;
                 }
                 try (Session session = getSession()) {
-                    SimpleDateFormat formatter2=new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat formatter2 = new SimpleDateFormat("dd-MM-yyyy");
                     String bDay = day_of_birth + "-" + month_of_birth + "-" + year_of_birth;
 
-                    Date d = formatter2.parse(bDay);
+                    java.util.Date d = formatter2.parse(bDay);
                     Timestamp bDayStamp = new Timestamp(d.getTime());
                     Users user = new Users();
 
@@ -166,8 +164,7 @@ public class Assignment {
                     //Commit The transaction
                     tx.commit();
                     return Long.toString(userid);
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     return null;
                 }
             }
@@ -181,18 +178,22 @@ public class Assignment {
      * @param top_n
      * @return the top items from mediaitems table sorted by "mid" in ascending order
      */
-    public static List<Mediaitems> getTopItems(int top_n) {
+    public static List<Mediaitems> getTopNItems(int top_n) {
         if (top_n < 0) {
             System.out.println("Cannot search for negative number of mediaitems");
             return null;
         }
+        List<Mediaitems> mediaitems = new ArrayList<>();
         try (Session s = getSession()) {
 
 
             String q = "select items from Mediaitems items where rownum<=" + top_n + "order by mid";
             Query query = s.createQuery(q);
 
-            List<Mediaitems> mediaitems = (List<Mediaitems>) query.list().get(0);
+            for (Object o :
+                    query.list()) {
+                mediaitems.add((Mediaitems) o);
+            }
             return mediaitems;
         } catch (Exception e) {
             return null;
@@ -260,7 +261,7 @@ public class Assignment {
         if (userid == null || mid == null) {
             return;
         }
-        History h= new History();
+        History h = new History();
         Timestamp now = new Timestamp(System.currentTimeMillis());
         h.setUserid(Long.parseLong(userid));
         h.setViewtime(now);
@@ -328,12 +329,13 @@ public class Assignment {
      * if the userid is representing an existing user
      * then the function gets all the user history sorted asc by their viewtime
      * and creates a map of the Media item title that the user viewed and the time he did
+     *
      * @param userid - the userid to get his historye
      * @return {@code Map<String (title),Date>} of the title the user viewed and the date.
      */
-    public static Map<String, Date> getHistory (String userid){
-        Map<String,Date> userHistory = new HashMap<>();
-        try (Session s = getSession()){
+    public static Map<String, Date> getHistory(String userid) {
+        Map<String, Date> userHistory = new HashMap<>();
+        try (Session s = getSession()) {
             if (getUser(userid) != null) {
                 String q = "select md.title, h.viewtime from History h join Mediaitems md on h.mid = md.mid" +
                         " where h.id.userid = '" + userid + "' order by h.viewtime asc";
@@ -345,7 +347,6 @@ public class Assignment {
                     Timestamp time = (Timestamp) ob[1];
                     Date date = new Date(time.getTime());
                     userHistory.put(title, date);
-                    System.out.println(title + ":" + date.toString());
                 }
             }
         }

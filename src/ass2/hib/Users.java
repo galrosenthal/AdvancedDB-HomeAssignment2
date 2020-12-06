@@ -1,4 +1,4 @@
-package hib;
+package ass2.hib;
 
 import org.hibernate.annotations.GenericGenerator;
 

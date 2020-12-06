@@ -1,4 +1,4 @@
-package hib;
+package ass2.hib;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

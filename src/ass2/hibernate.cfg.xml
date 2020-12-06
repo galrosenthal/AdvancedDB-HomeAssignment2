@@ -10,12 +10,12 @@
     <property name="connection.password">abcd</property>
     <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
     <property name="hibernate.hbm2ddl.auto">update</property>
-    <mapping class="hib.Users"/>
-    <mapping class="hib.ADMINISTRATORS"/>
-    <mapping class="hib.History"/>
-    <mapping class="hib.LoginLog"/>
-    <mapping class="hib.Mediaitems"/>
-    <mapping class="hib.Similarity"/>
+    <mapping class="ass2.hib.Users"/>
+    <mapping class="ass2.hib.ADMINISTRATORS"/>
+    <mapping class="ass2.hib.History"/>
+    <mapping class="ass2.hib.LoginLog"/>
+    <mapping class="ass2.hib.Mediaitems"/>
+    <mapping class="ass2.hib.Similarity"/>
 
 
     <!-- DB schema will be updated if needed -->
